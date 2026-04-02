@@ -1,26 +1,64 @@
 ---
 title: "Project 1: Step 1"
+author: Rayan Tahir
 format: html
 editor: visual
+theme: superhero
 ---
 
-## Quarto
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+**Context of the Data:**
+The Measles dataset consists of two WHO surveillance tables of measles and rubella cases at the country level, with a monthly and yearly dataset. The monthly data records observe by country, year, and month and include counts of suspected, clinically compatible, epidemiologically linked, and lab confirmed cases for both diseases, along with discatded cases. The yearly data displays the information by country and year and also includes population values and incidence rates, which can be used for comparing the burden of the disease across many countries. 
 
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
+**Data Cleaning**
 ```{r}
-1 + 1
+#| echo: true
+#| output: false
+
+library(tidyverse)
+library(here)
+library(readxl)
+library(janitor)
+
+cases_month <- read_xlsx(here("404-table-web-epi-curve-data.xlsx"), 2) %>%
+  janitor::clean_names() %>%
+  dplyr::mutate(
+    dplyr::across(year:discarded, as.numeric)
+  )
+
+cases_year <- read_xlsx(here("403-table-web-reporting-data.xlsx"), 2) %>%
+  row_to_names(1) %>%
+  clean_names() %>%
+  rename(
+    country = member_state,
+    iso3 = iso_country_code,
+    measles_total= number_of_measles_cases_by_confirmation_method,
+    measles_lab_confirmed = na,
+    measles_epi_linked = na_2,
+    measles_clinical = na_3,
+    rubella_total = number_of_rubella_cases_by_confirmation_method,
+    rubella_lab_confirmed = na_4,
+    rubella_epi_linked = na_5,
+    rubella_clinical = na_6
+  ) %>%
+  slice(-1)
 ```
 
-You can add options to executable code like this
+**Data Cleaning Description:**
+For the cleaning of both the month and year dataset, it focused on standardizing the column names and fixing the headers from Excel into a cleaner format using clean_names(). The the monthly dataset all the variables from "year" through "discarded" were converted to numeric to make sure that their counts could be analyzed properly. In the yearly dataset, the raw Excel file had to get it's previously structured headers fixed further through the function row_to_names(), and then the variables were renamed to more concise names.
 
-```{r}
-#| echo: false
-2 * 2
-```
+**Research Questions: Addressed with this data**
 
-The `echo: false` option disables the printing of code (only output is displayed).
+* How do measles cases vary over time across different countries?
+* What is the relationship between clinical measles case classifications and laboratory-confirmed measles case classifications across countries
+
+**Research Questions: Addressed with supplemental data**
+
+* How do measles infection rates relate to the vaccination rates across countries?
+* What is the relationship between a countries GDP per capita and their measles infection rate?
+
+**Research Question Visualizations**
+
+*Made with Excalidraw*
+
+![](Graph_Sketch.png)
