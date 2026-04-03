@@ -4,6 +4,7 @@ author: Rayan Tahir
 format: html
 editor: visual
 theme: superhero
+error: true
 ---
 
 **Context of the Data:** The Measles dataset consists of two WHO surveillance tables of measles and rubella cases at the country level, with a monthly and yearly dataset. The monthly data records observe by country, year, and month and include counts of suspected, clinically compatible, epidemiologically linked, and lab confirmed cases for both diseases, along with discarded cases. The yearly data displays the information by country and year and also includes population values and incidence rates, which can be used for comparing the burden of the disease across many countries.
