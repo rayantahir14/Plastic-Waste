@@ -1,0 +1,54 @@
+---
+title: "Project 1: Step 2"
+author: Rayan Tahir
+format: html
+editor: visual
+theme: superhero
+error: true
+---
+
+```{r}
+#| echo: true
+#| output: false
+tuesdata <- tidytuesdayR::tt_load('2021-01-26')
+tuesdata <- tidytuesdayR::tt_load(2021, week = 5)
+plastics <- tuesdata$plastics
+```
+
+```{r}
+#| echo: true
+#| output: false
+library(tidyverse)
+library(dplyr)
+```
+
+**Dominant Plastic Type by Country**
+
+```{r}
+find_max <- function(x) {
+  names(x)[x == max(x, na.rm = TRUE)][1] 
+}
+
+dominant_plastic <- function(data) {
+  plastic_cols <- 
+    c(
+    "empty", 
+    "hdpe", 
+    "ldpe", 
+    "o", 
+    "pet", 
+    "pp", 
+    "ps", 
+    "pvc")
+  dominant <- apply(
+    select(data, all_of(plastic_cols)), 
+    1,
+    FUN = find_max
+  )
+  return(dominant)
+}
+```
+
+```{r}
+dominant_plastic(plastics)
+```
