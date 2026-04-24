@@ -207,14 +207,29 @@ combined_2019 <- inner_join(
   by = c("iso" = "country")
 )
 
-combined_2019 <- unique(combined_2019)
-write.csv(combined_2019, "plotting-data.csv")
-options(scipen = 999) #to turn off scientific notation on graph
-plot(combined_2019$total_volunteers ~ combined_2019$gdp_per_capita_nominal, 
-     col = "blue", 
-     pch = 16, 
-     xlab = "GDP per capita (nominal, 2019)", 
-     ylab = "Total volunteers",
-     main = "Volunteers vs GDP per Capita (nominal, 2019)", log = "x"
-     )
+combined_2019 <- combined_2019 |>
+  distinct() |>
+  filter(!is.na(population), population > 0) |>
+  mutate(
+    volunteers_per_capita = total_volunteers / population
+  )
+
+options(scipen = 999)
+
+plot(
+  volunteers_per_capita ~ gdp_per_capita_nominal,
+  data = combined_2019,
+  col = "blue",
+  pch = 16,
+  xlab = "GDP per capita (nominal, 2019)",
+  ylab = "Volunteers per capita",
+  main = "Volunteers per Capita vs GDP per Capita (2019)",
+  log = "x"
+)
+
+abline(
+  lm(volunteers_per_capita ~ log(gdp_per_capita_nominal), data = combined_2019),
+  col = "red",
+  lwd = 2
+)
 ```

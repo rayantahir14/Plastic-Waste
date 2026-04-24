@@ -6,14 +6,16 @@ editor: visual
 theme: superhero
 error: true
 ---
+
 # Data Context/Cleaning
+
 **Context of Data:**
 
-The dataset I will be utilizing captures the global audit results from plastic waste that is collected from volunteers. The waste was then used to link pollution back to specific companies and the materials found to better learn how to combat the pollution 
+The dataset I will be utilizing captures the global audit results from plastic waste that is collected from volunteers. The waste was then used to link pollution back to specific companies and the materials found to better learn how to combat the pollution
 
 **Data Cleaning:**
 
-The Janitor function was used to clean the column names and standardize them, mutate was used to convert strings into numeric and add a year column. Country names were extracted and stored in a new column for the 2019 data set. In the 2019 data set duplicate columns were removed also inconsistent column names were renamed. Finally the data sets were combined into one singular data set 
+The Janitor function was used to clean the column names and standardize them, mutate was used to convert strings into numeric and add a year column. Country names were extracted and stored in a new column for the 2019 data set. In the 2019 data set duplicate columns were removed also inconsistent column names were renamed. Finally the data sets were combined into one singular data set
 
 # **Dataset and Libraries**
 
@@ -33,6 +35,7 @@ library(dplyr)
 ```
 
 # 1. Dominant Plastic Type by Country
+
 ```{r}
 find_max <- function(x) {
   names(x)[x == max(x, na.rm = TRUE)][1] 
@@ -58,7 +61,9 @@ dominant_plastic <- function(data) {
 }
 
 ```
+
 # Example Call
+
 ```{r}
 head(dominant_plastic(plastics), 24)
 ```
@@ -102,6 +107,7 @@ initial |>
 ```
 
 # 3. Plastic Type Summary by Year
+
 ```{r}
 plastic_summary_by_year <- function(data, year_value) { 
 data |> 
@@ -128,6 +134,7 @@ year = year_value
 ```
 
 # Example Call
+
 ```{r}
 plastic_summary_by_year(plastics, 2019) |> 
 bind_rows(plastic_summary_by_year(plastics, 2020)) |> 
@@ -144,6 +151,7 @@ other
 ```
 
 # 4. Average amount of volunteers per country
+
 ```{r}
 volunteer_per_country <- function(x){
   x |> 
@@ -151,7 +159,9 @@ volunteer_per_country <- function(x){
     summarise(avg_volunteers = mean(volunteers, na.rm = TRUE))
   }
 ```
+
 # Example Call
+
 ```{r}
 volunteer_per_country(plastics)
 ```
