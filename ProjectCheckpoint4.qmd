@@ -140,7 +140,7 @@ my_key = "ZctlRpoKTYWFFBkaNxfmEjLNfDBmQFAlFxgZFWrr"
 get_GDP <- function (country, key = my_key) {
   
   url <- glue(
-    "https://api.api-ninjas.com/v1/gdp?country={country}&year=;X-Api-Key=MYbhe1Rp8V9ntWPVp9Qr8D2391Kqzu3KFmecPRNK"
+    "https://api.api-ninjas.com/v1/gdp?country={country}&year=;X-Api-Key=ZctlRpoKTYWFFBkaNxfmEjLNfDBmQFAlFxgZFWrr"
     )
   my_data <- safely(fromJSON)(url)
   if (is.null(my_data$result)) {
@@ -204,6 +204,14 @@ tr_2019 <- total_results[total_results$year %in% c(2019), ]
 # Start of Checkpoint 4
 
 ## How does a country's GDP status (low, medium, high) relate to its dominant plastic use type?
+
+## Data Context (Plastics Dataset)
+
+This analysis used the TidyTuesday plastics dataset along with GDP per capita data retrieved from API Ninjas API to examine how a country's economic status relates to its dominant plastic use type. The plastics data comes from Break Free From Plastic (BFFP), a movement focused on reducing plastic pollution and was complied and shared by data science Sarah Sauve through the TidyTuesday project. The BFFP's Brand Audits, which are efforts led where volunteers collect and categorize plastic waste to identify its sources. The observational unit in the dataset is typically an individually recorded item of plastic waste. For this project, we focus on the 2019 subset of the data, which has already been cleaned and combined by Sauve. This data is important because they provide insight into the types and sources of plastic pollution across countries, allowing for researchers, policymakers, and environmental advocates to better understand global plastic consumption patterns and work towards making change.
+
+## Data Context (GDP API)
+
+The GDP data we gathered in this analysis was obtained through the API Ninjas API, which provided us with country-level economic indicators that we utilized, such as GDP per capita. According to API Ninjas, their data are compiled by internal data engineers who curate information from a wide network of sources and vendors, so we don't have a clear, original source of where our GDP data is from. Our data was accessed through API requests in R. In cases where countries missing or not directly matching, we manually mapped ISO country code to improve coverage. This data is important because GDP per capita serves as a standard measure of a country's economic development, enabling us to categorize countries into low, medium and high income groups to investigate how economic status relates to pattern in plastic usage.
 
 ## Preliminary Context
 
@@ -394,11 +402,11 @@ We are choosing to utilize API-Ninjas API to gather country GDP and determine wh
 
 ```{r}
 #| output: false
-my_key = "k6XuPbvIYFC3YPIaD875hrv3Tr4WfWhFXUsyhuFQ"
+my_key = "ZctlRpoKTYWFFBkaNxfmEjLNfDBmQFAlFxgZFWrr"
 get_GDP <- function (country, key = my_key) {
   
   url <- glue(
-    "https://api.api-ninjas.com/v1/gdp?country={country}&year=;X-Api-Key=MYbhe1Rp8V9ntWPVp9Qr8D2391Kqzu3KFmecPRNK"
+    "https://api.api-ninjas.com/v1/gdp?country={country}&year=;X-Api-Key=ZctlRpoKTYWFFBkaNxfmEjLNfDBmQFAlFxgZFWrr"
     )
   my_data <- safely(fromJSON)(url)
   if (is.null(my_data$result)) {
@@ -660,4 +668,20 @@ ggplot(cleanup_country_year, aes(x = total_volunteers, y = avg_efficiency)) +
     y = "Cleanup efficiency (log scale)"
   ) +
   theme_minimal()
+```
+
+```{r}
+ggplot(tile_data, aes(x = gdp_group, y = n, fill = dominant_type)) +
+  geom_col(position = "fill", color = "white") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Distribution of Dominant Plastic Types by GDP Group (2019)",
+    subtitle = "Proportion of countries within each GDP group",
+    x = "GDP Group",
+    y = "Percent of Countries",
+    fill = "Dominant Plastic Type",
+    caption = "Source: TidyTuesday plastics dataset + API Ninjas GDP",
+    alt = "Stacked bar chart showing the percent of countries in each GDP group by dominant plastic type."
+  ) +
+  theme_classic(base_size = 13)
 ```
